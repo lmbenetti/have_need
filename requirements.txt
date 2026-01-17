@@ -1,0 +1,4 @@
+lxml==6.0.2
+pandas==2.3.3
+python3_discogs_client==2.7.1
+Requests==2.32.5
