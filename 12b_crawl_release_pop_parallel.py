@@ -1,6 +1,18 @@
 import discogs_client, time, gzip, sys, requests
 import pandas as pd
 from lxml import etree
+from datetime import datetime
+
+def print_current_datetime():
+    now = datetime.now()
+    print(now.strftime("%d-%m %H:%M"))
+    
+def count_lines_in_file(filename):
+    with open(filename, 'r') as file:
+        return sum(1 for line in file)
+
+total = count_lines_in_file('ids_todo_lisandro.txt')
+count = 0
 
 
 # client = discogs_client.Client(
@@ -30,9 +42,18 @@ except Exception as e:
     
 
 already_done = set(pd.read_csv("releases_have_want.tsv", sep = '\t')["release"])
-
+last_printed_pct = -1.0
 with open("ids_todo_lisandro.txt", 'r') as fin, open("releases_have_want.tsv", 'a') as fout:
     for line in fin:
+        count += 1
+        
+		 
+        pct = round((count / total) * 100, 2)
+        if pct != last_printed_pct:
+            print_current_datetime()
+            print(f"{pct:.2f}% done ({count}/{total})")
+            last_printed_pct = pct
+            
         release_id = int(line.strip())
         if release_id not in already_done:
             try:
